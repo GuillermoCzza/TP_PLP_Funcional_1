@@ -192,6 +192,8 @@ testsEj1 = test [ -- Casos de test para el ejercicio 1
   foldPersonaje (\p s -> 0) (\r d -> r+1) (\r -> r+1) (Muere phil)     -- Caso de test 2 - expresión a testear
     ~=? 1                                                               -- Caso de test 2 - resultado esperado
   ,
+
+  --pruebo los fold con distintos, constructores haciendo uso de todos los parámetros
   foldPersonaje (\p s -> s ++ " en posicion " ++ show p) (\r d -> r ++ " se movio hacia " ++ (show d)) (\r -> r ++ ", se murio") (Muere (Mueve phil Norte))
     ~=?  "Phil en posicion (0.0,0.0) se movio hacia Norte, se murio"
   ,
@@ -203,15 +205,24 @@ testsEj1 = test [ -- Casos de test para el ejercicio 1
   ]
 
 testsEj2 = test [ -- Casos de test para el ejercicio 2
+  --pruebo las posiciones con los distintos constructores
   posición_personaje phil       -- Caso de test 1 - expresión a testear
     ~=? (0,0)                   -- Caso de test 1 - resultado esperado
   ,
   posición_personaje (Mueve phil Norte)
     ~=? (0,1)
   ,
+  posición_personaje (Mueve (Mueve phil Norte) Sur)
+    ~=? (0,0)
+  ,
+  posición_personaje (Mueve phil Oeste)
+    ~=? (-1,0)
+  ,
   posición_personaje (Mueve (Muere (Mueve phil Norte)) Este)
     ~=? (1,1)
   ,
+
+  --pruebo con los distintos constructores (incluyendo variaciones con el personaje en Tomado)
   nombre_objeto mjölnir
     ~=? "Mjölnir"
   ,
