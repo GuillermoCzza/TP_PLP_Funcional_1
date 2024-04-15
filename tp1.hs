@@ -205,6 +205,21 @@ testsEj1 = test [ -- Casos de test para el ejercicio 1
 testsEj2 = test [ -- Casos de test para el ejercicio 2
   posición_personaje phil       -- Caso de test 1 - expresión a testear
     ~=? (0,0)                   -- Caso de test 1 - resultado esperado
+  ,
+  posición_personaje (Mueve phil Norte)
+    ~=? (0,1)
+  ,
+  posición_personaje (Mueve (Muere (Mueve phil Norte)) Este)
+    ~=? (1,1)
+  ,
+  nombre_objeto mjölnir
+    ~=? "Mjölnir"
+  ,
+  nombre_objeto (Tomado mjölnir (Mueve phil Norte))
+    ~=? "Mjölnir"
+  ,
+  nombre_objeto (EsDestruido (Tomado mjölnir (Mueve phil Norte)))
+    ~=? "Mjölnir"
   ]
 
 testsEj3 = test [ -- Casos de test para el ejercicio 3
