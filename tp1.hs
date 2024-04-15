@@ -197,6 +197,9 @@ testsEj1 = test [ -- Casos de test para el ejercicio 1
   ,
   foldObjeto (\p s -> s ++ " en posicion " ++ show p) (\r p -> r ++ " fue tomado por " ++ (nombre_personaje p)) (\r -> r ++ ", fue destruido") (EsDestruido (mjölnir))
     ~=? "Mjölnir en posicion (2.0,2.0), fue destruido"
+  ,
+  foldObjeto (\p s -> s ++ " en posicion " ++ show p) (\r p -> r ++ " fue tomado por " ++ (nombre_personaje p)) (\r -> r ++ ", fue destruido") (EsDestruido (Tomado mjölnir phil))
+    ~=? "Mjölnir en posicion (2.0,2.0) fue tomado por Phil, fue destruido"
   ]
 
 testsEj2 = test [ -- Casos de test para el ejercicio 2
