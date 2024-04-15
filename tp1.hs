@@ -163,7 +163,7 @@ tiene_thanos_todas_las_gemas u = (está_el_personaje "Thanos" u && está_el_obje
 {-Ejercicio 7-}
 
 podemos_ganarle_a_thanos :: Universo -> Bool
-podemos_ganarle_a_thanos u = not(tiene_thanos_todas_las_gemas u) && 
+podemos_ganarle_a_thanos u = (not (tiene_thanos_todas_las_gemas u)) && 
   ((está_el_objeto "StormBreaker" u && está_el_personaje "Thor" u) || (está_el_personaje "Wanda" u && está_el_personaje "Visión" u && en_posesión_de "Visión" (objeto_de_nombre "Gema de la Mente" u)))
 
 {-Tests-}
@@ -182,8 +182,34 @@ allTests = test [ -- Reemplazar los tests de prueba por tests propios
   ]
 
 phil = Personaje (0,0) "Phil"
+thanos = Personaje (10,10) "Thanos"
+thor = Personaje (5,5) "Thor"
+
 mjölnir = Objeto (2,2) "Mjölnir"
+stormbreaker = Objeto (-3,3) "StormBreaker"
+
+gema_tiempo = Objeto (1,3) "Gema del Tiempo"
+gema_mente = Objeto (7,9) "Gema de la Mente"
+gema_espacio = Objeto (0,6) "Gema del Espacio"
+gema_realidad = Objeto (0,4) "Gema de la Realidad"
+gema_poder = Objeto (14,28) "Gema del Poder"
+gema_alma = Objeto (200,1) "Gema del Alma"
+
+gemas_sueltas = [gema_tiempo, gema_mente, gema_espacio, gema_realidad, gema_poder, gema_alma]
+
+gema_tiempo_thanos = Tomado (Objeto (1,3) "Gema del Tiempo") thanos
+gema_mente_thanos = Tomado (Objeto (7,9) "Gema de la Mente") thanos
+gema_espacio_thanos = Tomado (Objeto (0,6) "Gema del Espacio") thanos
+gema_realidad_thanos = Tomado (Objeto (0,4) "Gema de la Realidad") thanos
+gema_poder_thanos = Tomado (Objeto (14,28) "Gema del Poder") thanos
+gema_alma_thanos = Tomado (Objeto (200,1) "Gema del Alma") thanos
+
+gemas_en_thanos = [gema_tiempo_thanos, gema_mente_thanos, gema_espacio_thanos, gema_realidad_thanos, gema_poder_thanos, gema_alma_thanos]
+
 universo_sin_thanos = universo_con [phil] [mjölnir]
+universo_thanos_gana_solo = universo_con [thanos] gemas_en_thanos
+universo_thanos_gana_esta_stormbreaker = universo_con [thanos, thor] (stormbreaker : gemas_en_thanos)
+
 
 testsEj1 = test [ -- Casos de test para el ejercicio 1
   foldPersonaje (\p s -> 0) (\r d -> r+1) (\r -> r+1) phil             -- Caso de test 1 - expresión a testear
@@ -254,6 +280,22 @@ testsEj6 = test [ -- Casos de test para el ejercicio 6
   ]
 
 testsEj7 = test [ -- Casos de test para el ejercicio 7
+  --si thanos no está, no necesitamos ganarle
   podemos_ganarle_a_thanos universo_sin_thanos         -- Caso de test 1 - expresión a testear
     ~=? False                                          -- Caso de test 1 - resultado esperado
+  ,
+
+  --thanos tiene que ganar (osea, no le ganamos) si tiene las 6 gemas, indpendientemente de si Thor tiene stormbreaker
+  podemos_ganarle_a_thanos universo_thanos_gana_solo
+    ~=? False
+  ,
+  podemos_ganarle_a_thanos universo_thanos_gana_esta_stormbreaker
+    ~=? False
+  ,
+  --si Thanos no ganó, y están stormbreaker y Thor (no necesariamente juntos) podemos ganar
+  podemos_ganarle_a_thanos (universo_con [thanos, thor] (stormbreaker : gemas_sueltas))
+    ~=? True
+  ,
+  podemos_ganarle_a_thanos (universo_con [thanos, thor] ((Tomado stormbreaker thor) : gemas_sueltas))
+    ~=? True
   ]
