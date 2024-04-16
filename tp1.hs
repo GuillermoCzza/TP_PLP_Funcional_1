@@ -125,9 +125,6 @@ foldObjeto fBase fTomado fDestruido objeto = case objeto of
 posición_personaje :: Personaje -> Posición
 posición_personaje = foldPersonaje (\pos _ -> pos) (\per dir -> siguiente_posición per dir) id 
 
---posición_personaje :: Personaje -> Posición
---posición_personaje = foldPersonaje (const id) (\per dir -> siguiente_posición per dir) id
-
 nombre_objeto :: Objeto -> String
 nombre_objeto = foldObjeto (const id) const id
 
@@ -221,8 +218,6 @@ testsEj1 = test [ -- Casos de test para el ejercicio 1
   foldPersonaje (\p s -> 0) (\r d -> r+1) (\r -> r+1) (Muere phil)     -- Caso de test 2 - expresión a testear
     ~=? 1                                                               -- Caso de test 2 - resultado esperado
   ,
-
-  --pruebo los fold con distintos, constructores haciendo uso de todos los parámetros
   foldPersonaje (\p s -> s ++ " en posicion " ++ show p) (\r d -> r ++ " se movio hacia " ++ (show d)) (\r -> r ++ ", se murio") (Muere (Mueve phil Norte))
     ~=?  "Phil en posicion (0.0,0.0) se movio hacia Norte, se murio"
   ,
@@ -234,7 +229,6 @@ testsEj1 = test [ -- Casos de test para el ejercicio 1
   ]
 
 testsEj2 = test [ -- Casos de test para el ejercicio 2
-  --pruebo las posiciones con los distintos constructores
   posición_personaje phil       -- Caso de test 1 - expresión a testear
     ~=? (0,0)                   -- Caso de test 1 - resultado esperado
   ,
@@ -250,8 +244,6 @@ testsEj2 = test [ -- Casos de test para el ejercicio 2
   posición_personaje (Mueve (Muere (Mueve phil Norte)) Este)
     ~=? (1,1)
   ,
-
-  --pruebo con los distintos constructores
   nombre_objeto mjölnir
     ~=? "Mjölnir"
   ,
@@ -275,7 +267,7 @@ testsEj4 = test [ -- Casos de test para el ejercicio 4
 testsEj5 = test [ -- Casos de test para el ejercicio 5
   objeto_libre_mas_cercano phil [Right mjölnir]       -- Caso de test 1 - expresión a testear
     ~=? mjölnir                                       -- Caso de test 1 - resultado esperado
-  ]
+  ] 
 
 testsEj6 = test [ -- Casos de test para el ejercicio 6
   tiene_thanos_todas_las_gemas universo_sin_thanos       -- Caso de test 1 - expresión a testear
@@ -283,29 +275,29 @@ testsEj6 = test [ -- Casos de test para el ejercicio 6
   ]
 
 testsEj7 = test [ -- Casos de test para el ejercicio 7
-  --si thanos no está, no necesitamos ganarle
   podemos_ganarle_a_thanos universo_sin_thanos         -- Caso de test 1 - expresión a testear
     ~=? False                                          -- Caso de test 1 - resultado esperado
   ,
-  --thanos tiene que ganar (osea, no le ganamos) si tiene las 6 gemas, indpendientemente de si Thor tiene stormbreaker
   podemos_ganarle_a_thanos universo_thanos_gana_solo
     ~=? False
   ,
+  
+  --thanos tiene que ganar si tiene las 6 gemas, indpendientemente de si Thor tiene stormbreaker
   podemos_ganarle_a_thanos universo_thanos_gana_esta_stormbreaker
     ~=? False
   ,
-  --si Thanos no ganó, y están stormbreaker y Thor (no necesariamente juntos) podemos ganar
+  -- stormbreaker y Thor no tienen que estar necesariamente juntos para que tengamos la posiblidad de ganar
   podemos_ganarle_a_thanos (universo_con [thanos, thor] (stormbreaker : gemas_sueltas))
     ~=? True
   ,
   podemos_ganarle_a_thanos (universo_con [thanos, thor] ((Tomado stormbreaker thor) : gemas_sueltas))
     ~=? True
   ,
-  --si Thanos no ganó, y están Wanda y Visión con la gema de la mente, podemos ganar
+  
+
   podemos_ganarle_a_thanos universo_wanda_vision
     ~=? True
   ,
-  -- ...pero si Visión no tiene la gema de la mente, no podemos ganar
   podemos_ganarle_a_thanos universo_wanda_vision_sin_mente
     ~=? False
   ]
