@@ -157,7 +157,7 @@ menor_distancia_con p x y | distancia x p < distancia y p = x
 {-Ejercicio 6-}
 --sumo todos los objetos de Thanos que son gemas, y si cuento 6 o más devuelvo true, sino false
 tiene_thanos_todas_las_gemas :: Universo -> Bool
-tiene_thanos_todas_las_gemas u  | (foldr (\obj acum -> (if es_una_gema obj then 1 else 0) + acum) 0 (objetos_en_posesión_de "Thanos" u)) >= 6 = True
+tiene_thanos_todas_las_gemas u  | (foldr (\obj acum -> (if es_una_gema obj then 1 else 0) + acum) 0 (objetos_en_posesión_de "Thanos" u)) == 6 = True
                                 | otherwise = False
 
 
