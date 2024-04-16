@@ -155,9 +155,10 @@ menor_distancia_con p x y | distancia x p < distancia y p = x
                           | otherwise = y
 
 {-Ejercicio 6-}
-
+--sumo todos los objetos de Thanos que son gemas, y si cuento 6 o más devuelvo true, sino false
 tiene_thanos_todas_las_gemas :: Universo -> Bool
-tiene_thanos_todas_las_gemas u = (está_el_personaje "Thanos" u && está_el_objeto "Gema de la Mente" u && está_el_objeto "Gema de la Alma" u && está_el_objeto "Gema de la Espacio" u && está_el_objeto "Gema de la Poder" u && está_el_objeto "Gema de la Tiempo" u && está_el_objeto "Gema de la Realidad" u) && (en_posesión_de "Thanos" (objeto_de_nombre "Gema de la Mente" u) && en_posesión_de "Thanos" (objeto_de_nombre "Gema de la Alma" u) && en_posesión_de "Thanos" (objeto_de_nombre "Gema de la Espacio" u) && en_posesión_de "Thanos" (objeto_de_nombre "Gema de la Poder" u) && en_posesión_de "Thanos" (objeto_de_nombre "Gema de la Tiempo" u) && en_posesión_de "Thanos" (objeto_de_nombre "Gema de la Realidad" u)) 
+tiene_thanos_todas_las_gemas u  | (foldr (\obj acum -> (if es_una_gema obj then 1 else 0) + acum) 0 (objetos_en_posesión_de "Thanos" u)) >= 6 = True
+                                | otherwise = False
 
 
 {-Ejercicio 7-}
@@ -197,14 +198,8 @@ gema_alma = Objeto (200,1) "Gema del Alma"
 
 gemas_sueltas = [gema_tiempo, gema_mente, gema_espacio, gema_realidad, gema_poder, gema_alma]
 
-gema_tiempo_thanos = Tomado (Objeto (1,3) "Gema del Tiempo") thanos
-gema_mente_thanos = Tomado (Objeto (7,9) "Gema de la Mente") thanos
-gema_espacio_thanos = Tomado (Objeto (0,6) "Gema del Espacio") thanos
-gema_realidad_thanos = Tomado (Objeto (0,4) "Gema de la Realidad") thanos
-gema_poder_thanos = Tomado (Objeto (14,28) "Gema del Poder") thanos
-gema_alma_thanos = Tomado (Objeto (200,1) "Gema del Alma") thanos
-
-gemas_en_thanos = [gema_tiempo_thanos, gema_mente_thanos, gema_espacio_thanos, gema_realidad_thanos, gema_poder_thanos, gema_alma_thanos]
+--una lista de los objetos gema pero en posesión de Thanos
+gemas_en_thanos = map (\obj -> Tomado obj thanos) gemas_sueltas
 
 universo_sin_thanos = universo_con [phil] [mjölnir]
 universo_thanos_gana_solo = universo_con [thanos] gemas_en_thanos
