@@ -185,6 +185,8 @@ allTests = test [ -- Reemplazar los tests de prueba por tests propios
 phil = Personaje (0,0) "Phil"
 thanos = Personaje (10,10) "Thanos"
 thor = Personaje (5,5) "Thor"
+vision = Personaje (-5, 3) "Visión"
+vision = Personaje (-5, 2) "Wanda"
 
 mjölnir = Objeto (2,2) "Mjölnir"
 stormbreaker = Objeto (-3,3) "StormBreaker"
@@ -196,6 +198,8 @@ gema_realidad = Objeto (0,4) "Gema de la Realidad"
 gema_poder = Objeto (14,28) "Gema del Poder"
 gema_alma = Objeto (200,1) "Gema del Alma"
 
+gema_mente_vision = Tomado (Objeto (7,9) "Gema de la Mente") vision
+
 gemas_sueltas = [gema_tiempo, gema_mente, gema_espacio, gema_realidad, gema_poder, gema_alma]
 
 --una lista de los objetos gema pero en posesión de Thanos
@@ -203,7 +207,11 @@ gemas_en_thanos = map (\obj -> Tomado obj thanos) gemas_sueltas
 
 universo_sin_thanos = universo_con [phil] [mjölnir]
 universo_thanos_gana_solo = universo_con [thanos] gemas_en_thanos
-universo_thanos_gana_esta_stormbreaker = universo_con [thanos, thor] (stormbreaker : gemas_en_thanos)
+
+universo_thanos_gana_stormbreaker = universo_con [thanos, thor] (stormbreaker : gemas_en_thanos)
+
+universo_wanda_vision = (universo_con [thanos, vision, wanda] [gema_tiempo, gema_mente_vision, gema_espacio, gema_realidad, gema_poder, gema_alma])
+universo_wanda_vision_sin_mente = (universo_con [thanos, vision, wanda] gemas_sueltas)
 
 
 testsEj1 = test [ -- Casos de test para el ejercicio 1
@@ -243,7 +251,7 @@ testsEj2 = test [ -- Casos de test para el ejercicio 2
     ~=? (1,1)
   ,
 
-  --pruebo con los distintos constructores (incluyendo variaciones con el personaje en Tomado)
+  --pruebo con los distintos constructores
   nombre_objeto mjölnir
     ~=? "Mjölnir"
   ,
@@ -279,7 +287,6 @@ testsEj7 = test [ -- Casos de test para el ejercicio 7
   podemos_ganarle_a_thanos universo_sin_thanos         -- Caso de test 1 - expresión a testear
     ~=? False                                          -- Caso de test 1 - resultado esperado
   ,
-
   --thanos tiene que ganar (osea, no le ganamos) si tiene las 6 gemas, indpendientemente de si Thor tiene stormbreaker
   podemos_ganarle_a_thanos universo_thanos_gana_solo
     ~=? False
@@ -293,4 +300,12 @@ testsEj7 = test [ -- Casos de test para el ejercicio 7
   ,
   podemos_ganarle_a_thanos (universo_con [thanos, thor] ((Tomado stormbreaker thor) : gemas_sueltas))
     ~=? True
+  ,
+  --si Thanos no ganó, y están Wanda y Visión con la gema de la mente, podemos ganar
+  podemos_ganarle_a_thanos universo_wanda_vision
+    ~=? True
+  ,
+  -- ...pero si Visión no tiene la gema de la mente, no podemos ganar
+  podemos_ganarle_a_thanos universo_wanda_vision_sin_mente
+    ~=? False
   ]
