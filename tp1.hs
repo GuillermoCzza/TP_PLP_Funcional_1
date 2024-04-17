@@ -188,6 +188,8 @@ wanda = Personaje (-5, 2) "Wanda"
 mjölnir = Objeto (2,2) "Mjölnir"
 stormbreaker = Objeto (-3,3) "StormBreaker"
 
+stormbreaker_en_thor = Tomado stormbreaker thor
+
 gema_tiempo = Objeto (1,3) "Gema del Tiempo"
 gema_mente = Objeto (7,9) "Gema de la Mente"
 gema_espacio = Objeto (0,6) "Gema del Espacio"
@@ -282,6 +284,12 @@ testsEj3 = test [ -- Casos de test para el ejercicio 3
 testsEj4 = test [ -- Casos de test para el ejercicio 4
   objetos_en_posesión_de "Phil" []       -- Caso de test 1 - expresión a testear
     ~=? []                             -- Caso de test 1 - resultado esperado
+  ,
+  objetos_en_posesión_de "Thanos" universo_thanos_gana_solo
+    ~=? gemas_en_thanos
+  ,
+  objetos_en_posesión_de "Thor" (universo_con [thor, thanos, wanda] (stormbreaker_en_thor : gemas_en_thanos))
+    ~=? [stormbreaker_en_thor]
   ]
 
 testsEj5 = test [ -- Casos de test para el ejercicio 5
@@ -310,7 +318,7 @@ testsEj7 = test [ -- Casos de test para el ejercicio 7
   podemos_ganarle_a_thanos (universo_con [thanos, thor] (stormbreaker : gemas_sueltas))
     ~=? True
   ,
-  podemos_ganarle_a_thanos (universo_con [thanos, thor] ((Tomado stormbreaker thor) : gemas_sueltas))
+  podemos_ganarle_a_thanos (universo_con [thanos, thor] (stormbreaker_en_thor : gemas_sueltas))
     ~=? True
   ,
   
