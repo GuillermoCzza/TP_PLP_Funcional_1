@@ -183,7 +183,7 @@ phil = Personaje (0,0) "Phil"
 thanos = Personaje (10,10) "Thanos"
 thor = Personaje (5,5) "Thor"
 vision = Personaje (-5, 3) "Visión"
-vision = Personaje (-5, 2) "Wanda"
+wanda = Personaje (-5, 2) "Wanda"
 
 mjölnir = Objeto (2,2) "Mjölnir"
 stormbreaker = Objeto (-3,3) "StormBreaker"
@@ -257,6 +257,26 @@ testsEj2 = test [ -- Casos de test para el ejercicio 2
 testsEj3 = test [ -- Casos de test para el ejercicio 3
   objetos_en []       -- Caso de test 1 - expresión a testear
     ~=? []            -- Caso de test 1 - resultado esperado
+  ,
+  personajes_en []
+    ~=? []
+  ,
+  --los objetos deberían figurar ya sea que estén o no en manos de un personaje o destruidos
+  objetos_en (universo_con [] gemas_sueltas)
+    ~=? gemas_sueltas
+  ,
+  objetos_en (universo_thanos_gana_stormbreaker)
+    ~=? (stormbreaker : gemas_en_thanos)
+  ,
+  objetos_en (universo_con [thanos] [Tomado (EsDestruido gema_poder) thanos])
+    ~=? [Tomado (EsDestruido gema_poder) thanos]
+  ,
+  --ídem para los distintos constructores de personajes
+  personajes_en universo_wanda_vision
+    ~=? [thanos, vision, wanda]
+  ,
+  personajes_en (universo_con [Muere thanos, Mueve vision Norte] [])
+    ~=? [Muere thanos, Mueve vision Norte]
   ]
 
 testsEj4 = test [ -- Casos de test para el ejercicio 4
@@ -283,7 +303,7 @@ testsEj7 = test [ -- Casos de test para el ejercicio 7
   ,
   
   --thanos tiene que ganar si tiene las 6 gemas, indpendientemente de si Thor tiene stormbreaker
-  podemos_ganarle_a_thanos universo_thanos_gana_esta_stormbreaker
+  podemos_ganarle_a_thanos universo_thanos_gana_stormbreaker
     ~=? False
   ,
   -- stormbreaker y Thor no tienen que estar necesariamente juntos para que tengamos la posiblidad de ganar
