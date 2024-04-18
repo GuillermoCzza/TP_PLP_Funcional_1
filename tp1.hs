@@ -369,5 +369,3 @@ testsEj7 = test [ -- Casos de test para el ejercicio 7
   podemos_ganarle_a_thanos universo_wanda_vision_sin_mente
     ~=? False
   ]
-  --prueba prueba
-  -- segunda prueba
