@@ -300,6 +300,18 @@ testsEj5 = test [ -- Casos de test para el ejercicio 5
 testsEj6 = test [ -- Casos de test para el ejercicio 6
   tiene_thanos_todas_las_gemas universo_sin_thanos       -- Caso de test 1 - expresión a testear
     ~=? False                                            -- Caso de test 1 - resultado esperado
+  ,
+  tiene_thanos_todas_las_gemas (universo_con [thanos] gemas_sueltas)
+    ~=? False
+  ,
+  tiene_thanos_todas_las_gemas (universo_con [thanos] [])
+    ~=? False
+  ,
+  tiene_thanos_todas_las_gemas universo_thanos_gana_solo
+    ~=? True
+  ,
+  tiene_thanos_todas_las_gemas universo_thanos_gana_stormbreaker
+    ~=? True
   ]
 
 testsEj7 = test [ -- Casos de test para el ejercicio 7
