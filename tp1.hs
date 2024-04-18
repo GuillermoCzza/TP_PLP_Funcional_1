@@ -361,8 +361,8 @@ testsEj7 = test [ -- Casos de test para el ejercicio 7
   podemos_ganarle_a_thanos (universo_con [thanos, thor] (stormbreaker_en_thor : gemas_sueltas))
     ~=? True
   ,
-  
 
+  
   podemos_ganarle_a_thanos universo_wanda_vision
     ~=? True
   ,
