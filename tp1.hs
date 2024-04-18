@@ -1,3 +1,5 @@
+{-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
+{-# HLINT ignore "Use camelCase" #-}
 import Test.HUnit
 
 {-- Tipos --}
@@ -143,16 +145,19 @@ objetos_en_posesión_de s u = filter (en_posesión_de s) (objetos_en u)
 
 {-Ejercicio 5-}
 
--- Asume que hay al menos un objeto
+-- Asume que hay al menos un objeto libre
 objeto_libre_mas_cercano :: Personaje -> Universo -> Objeto
-objeto_libre_mas_cercano p u = objeto_de (foldl1 (menor_distancia_con (Left p)) (map Right (objetos_libres_en u)))
+objeto_libre_mas_cercano p u = foldl1 (menor_distancia_con p) (objetos_libres_en u)
 
-menor_distancia_con :: Either Personaje Objeto -> Either Personaje Objeto -> Either Personaje Objeto -> Either Personaje Objeto
-menor_distancia_con p x y | distancia x p < distancia y p = x
+
+-- Compara la distancia de dos objetos con respecto a un personaje y devuelve el más cercano a este
+menor_distancia_con :: Personaje -> Objeto -> Objeto -> Objeto
+menor_distancia_con p x y | distancia (Right x) (Left p) < distancia (Right y) (Left p) = x
                           | otherwise = y
+-- Es necesario usar Right x/y y Left p para que el tipo coincida con el de la función distancia
 
 {-Ejercicio 6-}
---sumo todos los objetos de Thanos que son gemas, y si cuento 6 o más devuelvo true, sino false
+-- Sumo todos los objetos de Thanos que son gemas, y si cuento 6 o más devuelvo true, sino false
 tiene_thanos_todas_las_gemas :: Universo -> Bool
 tiene_thanos_todas_las_gemas u  | (foldr (\obj acum -> (if es_una_gema obj then 1 else 0) + acum) 0 (objetos_en_posesión_de "Thanos" u)) == 6 = True
                                 | otherwise = False
@@ -179,13 +184,19 @@ allTests = test [ -- Reemplazar los tests de prueba por tests propios
   "ejercicio7" ~: testsEj7
   ]
 
+--Personajes
+
 phil = Personaje (0,0) "Phil"
 thanos = Personaje (10,10) "Thanos"
 thor = Personaje (5,5) "Thor"
 vision = Personaje (-5, 3) "Visión"
 wanda = Personaje (-5, 2) "Wanda"
+dr_strange = Personaje (100,-4) "Dr Strange"
+
+--Objetos
 
 mjölnir = Objeto (2,2) "Mjölnir"
+escudo_capitán_américa = Objeto (2,2) "Escudo del Capitán América"
 stormbreaker = Objeto (-3,3) "StormBreaker"
 
 stormbreaker_en_thor = Tomado stormbreaker thor
@@ -203,6 +214,8 @@ gemas_sueltas = [gema_tiempo, gema_mente, gema_espacio, gema_realidad, gema_pode
 
 --una lista de los objetos gema pero en posesión de Thanos
 gemas_en_thanos = map (\obj -> Tomado obj thanos) gemas_sueltas
+
+-- Universos
 
 universo_sin_thanos = universo_con [phil] [mjölnir]
 universo_thanos_gana_solo = universo_con [thanos] gemas_en_thanos
@@ -295,7 +308,19 @@ testsEj4 = test [ -- Casos de test para el ejercicio 4
 testsEj5 = test [ -- Casos de test para el ejercicio 5
   objeto_libre_mas_cercano phil [Right mjölnir]       -- Caso de test 1 - expresión a testear
     ~=? mjölnir                                       -- Caso de test 1 - resultado esperado
-  ] 
+  ,
+  "Todos los objetos están libres " ~: objeto_libre_mas_cercano wanda (universo_wanda_vision_sin_mente)
+    ~=? gema_realidad
+  ,
+  "Dos objetos a la misma distancia" ~: objeto_libre_mas_cercano phil (universo_con [phil, thor, dr_strange] [mjölnir, escudo_capitán_américa, gema_mente, gema_poder])
+    ~=? escudo_capitán_américa
+  ,
+  "Un solo objeto libre" ~: objeto_libre_mas_cercano dr_strange (universo_con [thanos, dr_strange] (escudo_capitán_américa : gemas_en_thanos))
+    ~=? escudo_capitán_américa
+  ,
+  "Algunos objetos libres" ~: objeto_libre_mas_cercano dr_strange (universo_con [thanos, vision, thor, dr_strange] [gema_poder, gema_alma, stormbreaker_en_thor, gema_mente_vision]) 
+    ~=? gema_poder
+  ]
 
 testsEj6 = test [ -- Casos de test para el ejercicio 6
   tiene_thanos_todas_las_gemas universo_sin_thanos       -- Caso de test 1 - expresión a testear
