@@ -370,3 +370,4 @@ testsEj7 = test [ -- Casos de test para el ejercicio 7
     ~=? False
   ]
   --prueba prueba
+  -- segunda prueba
