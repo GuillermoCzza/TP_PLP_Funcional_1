@@ -305,6 +305,9 @@ testsEj4 = test [ -- Casos de test para el ejercicio 4
     ~=? [stormbreaker_en_thor]
   ]
 
+-- Para el test de dos objetos a la misma distancia
+mas_cercano_dos_iguales = objeto_libre_mas_cercano phil (universo_con [phil, thor, dr_strange] [mjölnir, escudo_capitán_américa, gema_mente, gema_poder])
+
 testsEj5 = test [ -- Casos de test para el ejercicio 5
   objeto_libre_mas_cercano phil [Right mjölnir]       -- Caso de test 1 - expresión a testear
     ~=? mjölnir                                       -- Caso de test 1 - resultado esperado
@@ -312,8 +315,8 @@ testsEj5 = test [ -- Casos de test para el ejercicio 5
   "Todos los objetos están libres " ~: objeto_libre_mas_cercano wanda (universo_wanda_vision_sin_mente)
     ~=? gema_realidad
   ,
-  "Dos objetos a la misma distancia" ~: objeto_libre_mas_cercano phil (universo_con [phil, thor, dr_strange] [mjölnir, escudo_capitán_américa, gema_mente, gema_poder])
-    ~=? escudo_capitán_américa
+  -- Dos objetos a la misma distancia
+  (elem mas_cercano_dos_iguales [escudo_capitán_américa, mjölnir]) ~=? True
   ,
   "Un solo objeto libre" ~: objeto_libre_mas_cercano dr_strange (universo_con [thanos, dr_strange] (escudo_capitán_américa : gemas_en_thanos))
     ~=? escudo_capitán_américa
