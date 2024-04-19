@@ -107,6 +107,8 @@ es_una_gema :: Objeto -> Bool
 es_una_gema o = isPrefixOf "Gema de" (nombre_objeto o)
 
 {-Ejercicio 1-}
+--foldPersonaje/foldObjeto toma 3 funciones (una para cada constructor),
+--un Personaje/Objeto y devuelve el resultado del plegado
 
 foldPersonaje :: (Posición -> String -> a) -> (a -> Dirección -> a) -> (a -> a) -> Personaje -> a
 foldPersonaje fBase fMueve fMuere personaje = case personaje of
@@ -123,9 +125,11 @@ foldObjeto fBase fTomado fDestruido objeto = case objeto of
   where fold = foldObjeto fBase fTomado fDestruido
 
 {-Ejercicio 2-}
+--posición_personaje devuelve la nueva posición de un personaje que se movió,
+--aplicando siguiente_posición por cada constructor Mueve
 
 posición_personaje :: Personaje -> Posición
-posición_personaje = foldPersonaje (\pos _ -> pos) (\per dir -> siguiente_posición per dir) id 
+posición_personaje = foldPersonaje (\pos _ -> pos) (\pos dir -> siguiente_posición pos dir) id 
 
 nombre_objeto :: Objeto -> String
 nombre_objeto = foldObjeto (const id) const id
