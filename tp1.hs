@@ -135,7 +135,7 @@ nombre_objeto :: Objeto -> String
 nombre_objeto = foldObjeto (const id) const id
 
 {-Ejercicio 3-}
-
+-- La demostración de la propiedad se encuentra al final del archivo
 objetos_en :: Universo -> [Objeto]
 objetos_en u = map objeto_de (filter es_un_objeto u)
 
@@ -377,3 +377,76 @@ testsEj7 = test [ -- Casos de test para el ejercicio 7
   podemos_ganarle_a_thanos universo_wanda_vision_sin_mente
     ~=? False
   ]
+
+{-
+forall u :: Universo. forall o :: Objeto. elem o (objetos_en u) => elem (Right o) u
+
+como Universo es del tipo lista, hacemos inducción estructural sobre el tipo
+forall u :: Universo vale P(u)
+P(u) = forall o :: Objeto. elem o (objetos_en u) => elem (Right o) u
+qvq P(u) => P(u0:u)
+
+caso base: P([])
+forall o :: Objeto. elem o (objetos_en u) => elem (Right o) u
+objetos_en u devuelve una lista vacía, ya que como el Universo es una lista vacía, no hay ningún Objeto en este
+forall o :: Objeto. elem o [] => elem (Right o) u
+≡ forall o :: Objeto. False => elem (Right o) u
+implicación con premisa falsa es trivial
+
+caso recursivo: 
+Asumimos que vale P(u) y queremos demostrar la implicación
+
+forall u0 :: Either Personaje Objeto. forall o :: Objeto. elem o (objetos_en (u0:u)) => elem (Right o) (u0:u)
+queremos ver que forall u0 :: Either Personaje Objeto. forall o :: Objeto vale elem o (objetos_en (u0:u)) => elem (Right o) (u0:u)
+
+
+elem o (objetos_en (u0:u)) => elem (Right o) (u0:u)
+por def de objetos_en 
+elem o (map objeto_de (filter es_un_objeto (u0:u))) => elem (Right o) (u0:u)
+
+analizamos la expresión filter es_un_objeto (u0:u)
+por definición de filter,
+if es_un_objeto u0 then u0:filter es_un_objeto u else filter es_un_objeto u
+
+caso es_un_objeto u0 == False
+elem o (map objeto_de (filter es_un_objeto u)) => elem (Right o) (u0:u)
+por HI,
+elem (Right o) u => elem (Right o) (u0:u)
+si elem (Right o) u == False, la implicación es True
+si elem (Right o) u == True, 
+elem (Right o) (u0:u)
+por def de elem,
+Right o == u0 || elem (Right o) u 
+como elem (Right o) u es True, por ||, la expresión es True 
+
+caso es_un_objeto u0 == True
+elem o (map objeto_de (u0: filter es_un_objeto u)) => elem (Right o) (u0:u)
+por definición de map,
+elem o (objeto_de u0: map objeto_de (filter es_un_objeto u))
+por definición de elem,
+o == objeto_de u0 || elem o (map objeto_de (filter es_un_objeto u))
+
+caso o== objeto_de u0:
+True || elem o (map objeto_de (filter es_un_objeto u)) ≡ True 
+entonces, tengo que probar que True =>  elem (Right o) (u0:u)
+como nos encontramos en el caso donde o== objeto_de u0, entonces:
+elem (Right o) ((Right o): u)
+por definición de elem,
+Right o == Right o || elem (Right o) u
+trivial
+
+caso o /= objeto_de u0:
+False || elem o (map objeto_de (filter es_un_objeto u)) ≡  elem o (map objeto_de (filter es_un_objeto u))
+nos queda demostrar elem o (map objeto_de (filter es_un_objeto u)) =>  elem (Right o) (u0:u)
+por HI, map objeto_de (filter es_un_objeto u) ≡ elem (Right o) u
+entonces,
+elem (Right o) u =>  elem (Right o) (u0:u)
+
+como elem (Right o) u es booleano, analizamos el caso donde es falso y donde es verdadero
+cuando la expresión es falsa, la implicación es trivial
+cuando es verdadera, 
+True =>  elem (Right o) (u0:u)
+por def de elem,
+Right o == u0 || elem (Right o) u
+como estamos en el caso donde elem (Right o) u es True, toda la expresión es True
+-}
