@@ -149,7 +149,7 @@ objetos_en_posesión_de s u = filter (en_posesión_de s) (objetos_en u)
 
 {-Ejercicio 5-}
 
--- Asume que hay al menos un objeto libre
+-- Asume que hay al menos un objeto
 objeto_libre_mas_cercano :: Personaje -> Universo -> Objeto
 objeto_libre_mas_cercano p u = foldl1 (menor_distancia_con p) (objetos_libres_en u)
 
